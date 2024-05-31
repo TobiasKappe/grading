@@ -27,6 +27,11 @@ def build_flags(client, args):
                 if question['id'] == submission['question_id']:
                     submissions[i+1] = submission
 
+        if args.before and result['submitted_at'] > args.before:
+            continue
+        if args.after and result['submitted_at'] < args.after:
+            continue
+
         if not student_matches(result['users'][0], args.student):
             continue
 
@@ -121,6 +126,14 @@ def main():
     parser.add_argument(
         '-s', '--student', action='append',
         help='Filter these students (by email or name)',
+    )
+    parser.add_argument(
+        '--before',
+        help='Only consider results submitted on or before the given time'
+    )
+    parser.add_argument(
+        '--after',
+        help='Only consider results submitted at or after the given time'
     )
 
     subparsers = parser.add_subparsers(required=True)
