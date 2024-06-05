@@ -161,7 +161,7 @@ def main():
             args.assignment,
         )
     except ValueError:
-        raise Exception(f'Did not find assignment "{args.course}"')
+        raise Exception(f'Did not find assignment "{args.assignment}"')
 
     args.func(client, args)
 
