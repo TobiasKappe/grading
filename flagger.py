@@ -5,6 +5,20 @@ from ouca.grading import config
 from ouca.grading import markers
 
 
+def student_name(user):
+    if user['middle_name']:
+        return (
+            f'{user["first_name"]} '
+            f'{user["middle_name"]} '
+            f'{user["last_name"]}'
+        )
+    else:
+        return (
+            f'{user["first_name"]} '
+            f'{user["last_name"]}'
+        )
+
+
 def student_matches(user, students):
     if not students:
         return True
@@ -12,19 +26,7 @@ def student_matches(user, students):
     if user['email'] in students:
         return True
 
-    if user['middle_name']:
-        name = (
-            f'{user["first_name"]} '
-            f'{user["middle_name"]} '
-            f'{user["last_name"]}'
-        )
-    else:
-        name = (
-            f'{user["first_name"]} '
-            f'{user["last_name"]}'
-        )
-
-    if name in students:
+    if student_name(user) in students:
         return True
 
     return False
