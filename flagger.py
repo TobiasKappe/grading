@@ -48,7 +48,7 @@ def build_flags(client, args):
         if not student_matches(result['users'][0], args.student):
             continue
 
-        print(result['users'][0]['email'])
+        print(student_name(result['users'][0]))
         for marker in markers.markers:
             submission = submissions[marker["question"]]
             if not submission['response']:
