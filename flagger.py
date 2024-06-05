@@ -1,5 +1,7 @@
 import argparse
 
+import requests
+
 from ouca.grading import ans
 from ouca.grading import config
 from ouca.grading import markers
@@ -39,6 +41,11 @@ def build_flags(client, args):
             questions.append(question)
 
     for result in client.get_results(args.assignment['id'], 'submitted'):
+        files = []
+        for file in result['files']:
+            response = requests.get(file['url'])
+            files.append((file['file_name'], response.text))
+
         submissions = {}
         for submission in result['submissions']:
             for i, question in enumerate(questions):
@@ -57,7 +64,7 @@ def build_flags(client, args):
             print(f'- {marker["name"]}:')
             for checker_cls in marker['checkers']:
                 try:
-                    checker = checker_cls(submissions)
+                    checker = checker_cls(submissions, files)
                 except markers.SubmissionMissingException:
                     continue
 
