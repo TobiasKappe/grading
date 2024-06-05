@@ -1,6 +1,3 @@
-from ouca.grading import utils
-
-
 class SubmissionMissingException(BaseException):
     pass
 

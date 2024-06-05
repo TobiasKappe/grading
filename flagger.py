@@ -49,7 +49,7 @@ def build_flags(client, args):
             continue
 
         print(student_name(result['users'][0]))
-        for marker in markers.markers:
+        for marker in args.module.markers:
             submission = submissions[marker["question"]]
             if not submission['response']:
                 continue
@@ -100,8 +100,12 @@ def clear_flags(client, args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Automatically flags submissions for practical 2',
+        description='Automatically flags submissions in Ans',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        'module',
+        help='Module name'
     )
     parser.add_argument(
         '-c', '--course',
@@ -110,8 +114,7 @@ def main():
     )
     parser.add_argument(
         '-a', '--assignment',
-        default='Practicum 2: assembly',
-        help='Assignment name in ANS',
+        help='Assignment name in ANS; inferred from module if None',
     )
     parser.add_argument(
         '-u', '--school',
@@ -138,6 +141,14 @@ def main():
 
     client = ans.AnsClient(config.ANS_API_TOKEN)
     args = parser.parse_args()
+
+    if args.module in markers.modules:
+        args.module = markers.modules[args.module]
+    else:
+        raise Exception(f'No markers for {args.module}')
+
+    if not args.assignment:
+        args.assignment = args.module.assignment_default
 
     try:
         args.course, = client.get_courses(args.school, args.course)
