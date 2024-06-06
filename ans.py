@@ -1,13 +1,9 @@
-import requests
-import time
-
-from urllib.parse import urljoin
+from ouca.grading.rest import RestSession
 
 
-class AnsClient(requests.Session):
+class AnsClient(RestSession):
     BASE_URL = "https://ans.app/api/v2/"
     ITEMS_PER_PAGE = 100
-    SLEEP_TIME = 0.1
 
     def __init__(self, api_token):
         self.api_token = api_token
@@ -16,21 +12,6 @@ class AnsClient(requests.Session):
             'Authorization': f'Bearer {api_token}',
             'Accept': 'application/json',
         }
-
-    def get(self, path, *args, **kwargs):
-        time.sleep(self.SLEEP_TIME)
-        path = urljoin(self.BASE_URL, path)
-        return super().get(path, *args, **kwargs)
-
-    def post(self, path, *args, **kwargs):
-        time.sleep(self.SLEEP_TIME)
-        path = urljoin(self.BASE_URL, path)
-        return super().post(path, *args, **kwargs)
-
-    def delete(self, path, *args, **kwargs):
-        time.sleep(self.SLEEP_TIME)
-        path = urljoin(self.BASE_URL, path)
-        return super().delete(path, *args, **kwargs)
 
     def get_pages(self, path, *args, **kwargs):
         if 'params' not in kwargs:
