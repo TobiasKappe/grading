@@ -64,7 +64,12 @@ def build_flags(client, args):
             print(f'- {marker["name"]}:')
             for checker_cls in marker['checkers']:
                 try:
-                    checker = checker_cls(submissions, files)
+                    checker = checker_cls(
+                        result['users'][0],
+                        marker['question'],
+                        submissions,
+                        files
+                    )
                 except markers.SubmissionMissingException:
                     continue
 
