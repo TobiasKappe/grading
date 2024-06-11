@@ -63,27 +63,33 @@ def build_flags(client, args):
 def clear_flags(client, args):
     # The ANS API does not seem to give a way to resolve a submission to its
     # parent result (and thus to the student who submitted it); we have to
-    # build a mapping from submissions to students ahead of time.
-    submission_to_student = {}
+    # build a mapping from submissions to results ahead of time.
+    submission_to_result = {}
     for result in client.get_results(args.assignment['id'], 'submitted'):
         for submission in result['submissions']:
-            submission_to_student[submission['id']] = result['users'][0]
+            submission_to_result[submission['id']] = result
 
     for comment in client.get_comments():
         if comment['commentable_type'] != 'Submission':
             continue
 
-        try:
-            submission = client.get_submission(comment['commentable_id'])
-        except ans.AnsForbiddenException:
-            continue
-
-        if submission['id'] not in submission_to_student:
+        submission_id = comment['commentable_id']
+        if submission_id not in submission_to_result:
             # comment is not on a submission belonging to the assignment
             continue
 
-        student = submission_to_student[comment['commentable_id']]
-        if not student_matches(student, args.student):
+        result = submission_to_result[submission_id]
+
+        try:
+            submission = client.get_submission(submission_id)
+        except ans.AnsForbiddenException:
+            print(
+                f'Could not access submission #{submission_id} '
+                f'which belongs to result {result["id"]}.'
+            )
+            continue
+
+        if not student_matches(result['users'][0], args.student):
             continue
 
         client.delete_comment(comment['id'])
