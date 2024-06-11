@@ -73,7 +73,11 @@ def clear_flags(client, args):
         if comment['commentable_type'] != 'Submission':
             continue
 
-        submission = client.get_submission(comment['commentable_id'])
+        try:
+            submission = client.get_submission(comment['commentable_id'])
+        except ans.AnsForbiddenException:
+            continue
+
         if submission['id'] not in submission_to_student:
             # comment is not on a submission belonging to the assignment
             continue

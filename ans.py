@@ -1,6 +1,10 @@
 from ouca.grading.rest import RestSession
 
 
+class AnsForbiddenException(Exception):
+    pass
+
+
 class AnsClient(RestSession):
     BASE_URL = "https://ans.app/api/v2/"
     ITEMS_PER_PAGE = 100
@@ -79,4 +83,10 @@ class AnsClient(RestSession):
 
     def get_submission(self, submission_id):
         response = self.get(f'submissions/{submission_id}')
+
+        if response.status_code == 403:
+            raise AnsForbiddenException(
+                f'Could not access submission {submission_id}'
+            )
+
         return response.json()
