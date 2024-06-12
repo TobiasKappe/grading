@@ -15,6 +15,12 @@ def build_flags(client, args):
         for question in client.get_questions(exercise['id']):
             questions.append(question)
 
+    flagged = set()
+    if args.unflagged:
+        for comment in client.get_comments():
+            if comment['commentable_type'] == 'Submission':
+                flagged |= {comment['commentable_id']}
+
     for result in client.get_results(args.assignment['id'], 'submitted'):
         files = []
         for file in result['files']:
@@ -42,6 +48,11 @@ def build_flags(client, args):
                 continue
 
             print(f'- {marker["name"]}:')
+
+            if submission['id'] in flagged:
+                print('(skipping - already flagged)')
+                continue
+
             for checker_cls in marker['checkers']:
                 try:
                     checker = checker_cls(
@@ -119,7 +130,7 @@ def main():
         help='Assignment name in ANS; inferred from module if None',
     )
     parser.add_argument(
-        '-u', '--school',
+        '--school',
         default=config.ANS_SCHOOL_ID,
         help='School ID in ANS',
     )
@@ -144,6 +155,11 @@ def main():
         '-f', '--flag',
         action='store_true',
         help='Actually flag submissions in ANS',
+    )
+    parser_build.add_argument(
+        '-u', '--unflagged',
+        action='store_true',
+        help='Only consider submissions that do not have any flags yet.',
     )
 
     parser_clear = subparsers.add_parser('clear', help='clear flags')
