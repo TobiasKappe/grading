@@ -44,7 +44,8 @@ def build_flags(client, args):
         print(student_name(result['users'][0]))
         for marker in args.module.markers:
             submission = submissions[marker["question"]]
-            if not submission['response']:
+            if not marker.get("maybe-empty", False) and \
+               not submission['response']:
                 continue
 
             print(f'- {marker["name"]}:')
