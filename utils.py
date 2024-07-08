@@ -28,6 +28,10 @@ def student_name(user):
         )
 
 
+def student_names(users):
+    return ", ".join(map(student_name, users))
+
+
 def student_matches(user, students):
     if not students:
         return True

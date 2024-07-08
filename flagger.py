@@ -6,7 +6,7 @@ from ouca.grading import ans
 from ouca.grading import config
 from ouca.grading import markers
 
-from ouca.grading.utils import student_name, student_matches
+from ouca.grading.utils import student_names, student_matches
 
 
 def build_flags(client, args):
@@ -41,7 +41,8 @@ def build_flags(client, args):
         if not student_matches(result['users'][0], args.student):
             continue
 
-        print(student_name(result['users'][0]))
+        students = result['users']
+        print(student_names(students))
         for marker in args.module.markers:
             submission = submissions[marker["question"]]
             if not marker.get("maybe-empty", False) and \
@@ -57,7 +58,7 @@ def build_flags(client, args):
             for checker_cls in marker['checkers']:
                 try:
                     checker = checker_cls(
-                        result['users'][0],
+                        students,
                         marker['question'],
                         submissions,
                         files,
