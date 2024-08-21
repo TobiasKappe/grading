@@ -3,7 +3,7 @@ import argparse
 import requests
 
 from grading import ans
-from grading import markers
+from grading.checker import SubmissionMissingException
 from grading.utils import student_names, student_matches
 
 DISCLAIMER = \
@@ -65,7 +65,7 @@ def build_flags(client, args):
                         files,
                         **marker.get('parameters', {})
                     )
-                except markers.SubmissionMissingException:
+                except SubmissionMissingException:
                     continue
 
                 for flag in checker.check():
@@ -115,7 +115,7 @@ def clear_flags(client, args):
         client.delete_comment(comment['id'])
 
 
-def main(school_id, api_token):
+def main(modules, school_id, api_token):
     parser = argparse.ArgumentParser(
         description='Automatically flags submissions in Ans',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -172,8 +172,8 @@ def main(school_id, api_token):
     client = ans.AnsClient(api_token)
     args = parser.parse_args()
 
-    if args.module in markers.modules:
-        args.module = markers.modules[args.module]
+    if args.module in modules:
+        args.module = modules[args.module]
     else:
         raise Exception(f'No markers for {args.module}')
 
