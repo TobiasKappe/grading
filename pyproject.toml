@@ -1,0 +1,17 @@
+[project]
+name = "grading"
+version = "0.1.0"
+description = "Partial grading automation for ANS"
+
+[tool.poetry]
+name = "grading"
+version = "0.1.0"
+description = "Partial grading automation for ANS"
+authors = ["Tobias Kappé <tobias@kap.pe>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

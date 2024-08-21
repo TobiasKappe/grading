@@ -1,4 +1,4 @@
-from ouca.grading.rest import RestSession
+from grading.rest import RestSession
 
 
 class AnsForbiddenException(Exception):

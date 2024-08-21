@@ -2,11 +2,10 @@ import argparse
 
 import requests
 
-from ouca.grading import ans
-from ouca.grading import config
-from ouca.grading import markers
-
-from ouca.grading.utils import student_names, student_matches
+from grading import ans
+from grading import config
+from grading import markers
+from grading.utils import student_names, student_matches
 
 
 def build_flags(client, args):
