@@ -1,8 +1,0 @@
-DISCLAIMER = \
-    '<strong>This flag was generated automatically.</strong><br/><br/>'
-
-raise Exception('You should configure a school ID below this line.')
-ANS_SCHOOL_ID = -1
-
-raise Exception('You should configure an API token below this line.')
-ANS_API_TOKEN = "..."

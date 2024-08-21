@@ -3,9 +3,11 @@ import argparse
 import requests
 
 from grading import ans
-from grading import config
 from grading import markers
 from grading.utils import student_names, student_matches
+
+DISCLAIMER = \
+    '<strong>This flag was generated automatically.</strong><br/><br/>'
 
 
 def build_flags(client, args):
@@ -69,7 +71,7 @@ def build_flags(client, args):
                 for flag in checker.check():
                     if args.flag:
                         client.post_comment(
-                            f'{config.DISCLAIMER}\n\n{flag}',
+                            f'{DISCLAIMER}\n\n{flag}',
                             submission['id'],
                             'Submission'
                         )
@@ -113,7 +115,7 @@ def clear_flags(client, args):
         client.delete_comment(comment['id'])
 
 
-def main():
+def main(school_id, api_token):
     parser = argparse.ArgumentParser(
         description='Automatically flags submissions in Ans',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -133,7 +135,7 @@ def main():
     )
     parser.add_argument(
         '--school',
-        default=config.ANS_SCHOOL_ID,
+        default=school_id,
         help='School ID in ANS',
     )
     parser.add_argument(
@@ -167,7 +169,7 @@ def main():
     parser_clear = subparsers.add_parser('clear', help='clear flags')
     parser_clear.set_defaults(func=clear_flags)
 
-    client = ans.AnsClient(config.ANS_API_TOKEN)
+    client = ans.AnsClient(api_token)
     args = parser.parse_args()
 
     if args.module in markers.modules:
@@ -192,7 +194,3 @@ def main():
         raise Exception(f'Did not find assignment "{args.assignment}"')
 
     args.func(client, args)
-
-
-if __name__ == '__main__':
-    main()
