@@ -11,6 +11,7 @@ authors = ["Tobias Kappé <tobias@kap.pe>"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
+requests = "^2.32.2"
 
 [build-system]
 requires = ["poetry-core"]
