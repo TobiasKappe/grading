@@ -114,7 +114,7 @@ def clear_flags(client, args):
         client.delete_comment(comment['id'])
 
 
-def main(modules, school_id, api_token):
+def main(default_course, modules, school_id, api_token):
     parser = argparse.ArgumentParser(
         description='Automatically flags submissions in Ans',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -125,7 +125,7 @@ def main(modules, school_id, api_token):
     )
     parser.add_argument(
         '-c', '--course',
-        default='Computerarchitectuur',
+        default=default_course,
         help='Course name in ANS',
     )
     parser.add_argument(
