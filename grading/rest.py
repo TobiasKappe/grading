@@ -6,7 +6,7 @@ from requests import Session
 
 class RestSession(Session):
     BASE_URL = None
-    SLEEP_TIME = 0.1
+    SLEEP_TIME = 0.2
 
     def get(self, path, *args, **kwargs):
         sleep(self.SLEEP_TIME)
