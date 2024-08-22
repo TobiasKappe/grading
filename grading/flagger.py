@@ -63,7 +63,6 @@ def build_flags(client, args):
                         marker['question'],
                         submissions,
                         files,
-                        **marker.get('parameters', {})
                     )
                 except SubmissionMissingException:
                     continue
