@@ -3,8 +3,13 @@ class SubmissionMissingException(BaseException):
 
 
 class Checker:
-    def __init__(self):
-        raise NotImplementedError
+    show_values = 10
+
+    def __init__(self, students, question, submissions, files, **kwargs):
+        self.students = students
+        self.question = question
+        self.submissions = submissions
+        self.files = files
 
     def check(self):
         raise NotImplementedError
@@ -13,7 +18,7 @@ class Checker:
         lines = []
         lines.append('<table>')
         lines.append('<tr><th>Input</th><th>Expected</th><th>Output</th></tr>')
-        for value, expected, outcome in errors[:self.SHOW_VALUES]:
+        for value, expected, outcome in errors[:self.show_values]:
             lines.append(
                 f'<tr>'
                 f'<td>{value}</td>'
@@ -25,6 +30,19 @@ class Checker:
 
         yield (
             f'Got {len(errors)} unexpected outcomes; ' +
-            f'here is a table of the first {self.SHOW_VALUES}:\n' +
+            f'here is a table of the first {self.show_values}:\n' +
             '\n'.join(lines)
         )
+
+    @staticmethod
+    def parametrize(*parameters):
+        def decorator(cls):
+            def wrapper(**arguments):
+                class WrappedChecker(cls):
+                    def __init__(self, *args, **kwargs):
+                        for param in parameters:
+                            setattr(self, param, arguments[param])
+                        super().__init__(*args, **kwargs)
+                return WrappedChecker
+            return wrapper
+        return decorator
