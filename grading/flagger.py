@@ -23,6 +23,14 @@ def build_flags(client, args):
                 flagged |= {comment['commentable_id']}
 
     for result in client.get_results(args.assignment['id'], 'submitted'):
+        # Do this first, and bail out early as possible
+        if not student_matches(result['users'][0], args.student):
+            continue
+        if args.before and result['submitted_at'] > args.before:
+            continue
+        if args.after and result['submitted_at'] < args.after:
+            continue
+
         files = []
         for file in result['files']:
             response = requests.get(file['url'])
@@ -32,22 +40,18 @@ def build_flags(client, args):
         for submission in result['submissions']:
             for i, question in enumerate(questions):
                 if question['id'] == submission['question_id']:
-                    submissions[i+1] = submission
-
-        if args.before and result['submitted_at'] > args.before:
-            continue
-        if args.after and result['submitted_at'] < args.after:
-            continue
-
-        if not student_matches(result['users'][0], args.student):
-            continue
+                    submissions[i+1] = client.get_submission(submission['id'])
 
         students = result['users']
         print(student_names(students))
+
         for marker in args.module.markers:
             submission = submissions[marker["question"]]
+            # "maybe-empty" signals that the answer given by a student can be empty
+            # i.e. the answer is not needed for the checker to run a check on
+            # i.e. checker uses CircuitVerse file for checking
             if not marker.get("maybe-empty", False) and \
-               not submission['response']:
+               'responses' not in submission:
                 continue
 
             print(f'- {marker["name"]}:')
