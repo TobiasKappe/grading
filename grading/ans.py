@@ -55,10 +55,6 @@ class AnsClient(RestSession):
                 continue
             yield self.get_result(result['id'])
 
-    def get_submission(self, submission_id):
-        response = self.get(f'submissions/{submission_id}')
-        return response.json()
-
     def get_exercises(self, assignment_id):
         for exercise in self.get_pages(
             f'assignments/{assignment_id}/exercises'
